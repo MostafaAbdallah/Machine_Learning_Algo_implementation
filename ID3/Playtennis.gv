@@ -1,0 +1,19 @@
+digraph finite_state_machine {
+	rankdir=TB size="8,5"
+	node [shape=ellipse]
+	Outlook
+	Outlook -> Humidity [label=Sunny]
+	Outlook -> Yes [label=Overcast]
+	Outlook -> Wind [label=Rain]
+	Humidity
+	Humidity -> No [label=High]
+	Humidity -> Yes [label=Normal]
+	Yes
+	Wind
+	Wind -> Yes [label=Weak]
+	Wind -> No [label=Strong]
+	No
+	Yes
+	Yes
+	No
+}
