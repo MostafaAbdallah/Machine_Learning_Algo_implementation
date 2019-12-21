@@ -1,19 +1,19 @@
 digraph finite_state_machine {
 	rankdir=TB size="8,5"
 	node [shape=ellipse]
-	ELEVATION
-	ELEVATION -> SLOPE [label=High]
-	ELEVATION -> Riparian [label=Low]
-	ELEVATION -> STREAM [label=Medium]
-	ELEVATION -> Conifer [label=Highest]
-	SLOPE
-	SLOPE -> Chapparal [label=Steep]
-	SLOPE -> Chapparal [label=Moderate]
-	SLOPE -> Conifer [label=Flat]
+	ELEVATION_D
+	ELEVATION_D -> SLOPE_D [label=High]
+	ELEVATION_D -> Riparian [label=Low]
+	ELEVATION_D -> STREAM_D [label=Medium]
+	ELEVATION_D -> Conifer [label=Highest]
+	SLOPE_D
+	SLOPE_D -> Chapparal [label=Steep]
+	SLOPE_D -> Chapparal [label=Moderate]
+	SLOPE_D -> Conifer [label=Flat]
 	Riparian
-	STREAM
-	STREAM -> Chapparal [label=FALSE]
-	STREAM -> Riparian [label=TRUE]
+	STREAM_D
+	STREAM_D -> Chapparal [label=FALSE]
+	STREAM_D -> Riparian [label=TRUE]
 	Conifer
 	Chapparal
 	Chapparal

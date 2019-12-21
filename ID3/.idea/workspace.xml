@@ -1,7 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="52ce88d6-98f7-4188-ab24-de1354f9b9a0" name="Default Changelist" comment="" />
+    <list default="true" id="52ce88d6-98f7-4188-ab24-de1354f9b9a0" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Dataset/Playtennis.csv" beforeDir="false" afterPath="$PROJECT_DIR$/Dataset/Playtennis.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Dataset/vegetation.csv" beforeDir="false" afterPath="$PROJECT_DIR$/Dataset/vegetation.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ID3.py" beforeDir="false" afterPath="$PROJECT_DIR$/ID3.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Playtennis.gv" beforeDir="false" afterPath="$PROJECT_DIR$/Playtennis.gv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Playtennis.gv.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/Playtennis.gv.pdf" afterDir="false" />
+    </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -83,32 +90,15 @@
       <map>
         <entry key="MAIN">
           <value>
-            <State />
+            <State>
+              <option name="COLUMN_ORDER" />
+            </State>
           </value>
         </entry>
       </map>
     </option>
   </component>
   <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/ID3.py</url>
-          <line>195</line>
-          <option name="timeStamp" value="4" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/ID3.py</url>
-          <line>212</line>
-          <option name="timeStamp" value="5" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/ID3.py</url>
-          <line>62</line>
-          <option name="timeStamp" value="9" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
     <watches-manager>
       <configuration name="PythonConfigurationType">
         <watch expression="dataset.attributes_ids" />

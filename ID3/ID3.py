@@ -81,14 +81,15 @@ class DataSet:
         # print(self.attributes_ids)
         # print(self.samples_values)
         for att_id in range(len(self.attributes_ids)):
-            for sam_id in range(len(self.samples_values_ids)):
-                if self.attributes_names[att_id] in self.attributes_values:
-                    if self.samples_values[sam_id][att_id] not in (
-                            self.attributes_values[self.attributes_names[att_id]]):
-                        self.attributes_values[self.attributes_names[att_id]].append(
-                            self.samples_values[sam_id][att_id])
-                else:
-                    self.attributes_values[self.attributes_names[att_id]] = [self.samples_values[sam_id][att_id]]
+            if not self.isContinuousAttribute(self.attributes_names[att_id]):
+                for sam_id in range(len(self.samples_values_ids)):
+                    if self.attributes_names[att_id] in self.attributes_values:
+                        if self.samples_values[sam_id][att_id] not in (
+                                self.attributes_values[self.attributes_names[att_id]]):
+                            self.attributes_values[self.attributes_names[att_id]].append(
+                                self.samples_values[sam_id][att_id])
+                    else:
+                        self.attributes_values[self.attributes_names[att_id]] = [self.samples_values[sam_id][att_id]]
 
         # print(self.attributes_values)
 
@@ -97,6 +98,12 @@ class DataSet:
         for i in range(len(samples_Ids)):
             if target_val != self.target_feature[samples_Ids[i]]:
                 return False
+
+        return True
+
+    def isContinuousAttribute(self, attribute_name):
+        if attribute_name[len(attribute_name) - 1] == 'D':
+            return False
 
         return True
 
@@ -163,10 +170,8 @@ class DecisionTree:
 
         entropy = entropy * -1
         return entropy
-
-    def get_rem(self, dataset, samples_values_ids, attributes_id):
+    def get_rem_discrete_att(self,dataset, samples_values_ids, attributes_id, attrbute_name):
         rem = 0
-        attrbute_name = dataset.attributes_names[attributes_id]
         # print(dataset.attributes_values[attrbute_name])
         att_vals_freq = dict()
 
@@ -187,6 +192,18 @@ class DecisionTree:
             else:
                 rem += att_vals_freq[item] * self.getGini(dataset, samples_values_ids, attributes_id, item)
 
+        return rem
+    def get_rem_continuous_att(selfe, dataset, samples_values_ids, attributes_id, attrbute_name):
+        rem = 0
+        return rem
+
+    def get_rem(self, dataset, samples_values_ids, attributes_id):
+        rem = 0
+        attrbute_name = dataset.attributes_names[attributes_id]
+        if not dataset.isContinuousAttribute(attrbute_name):
+            rem = self.get_rem_discrete_att(dataset, samples_values_ids, attributes_id, attrbute_name)
+        else:
+            rem = self.get_rem_continuous_att(dataset, samples_values_ids, attributes_id, attrbute_name)
         return rem
 
     def get_best_att_GI(self, dataset, samples_values_ids, attributes_ids):
@@ -296,5 +313,5 @@ def Test(file_path):
 
 
 if __name__ == '__main__':
-    Test('./Dataset/Playtennis.csv')
-    # Test('./Dataset/vegetation.csv')
+    # Test('./Dataset/Playtennis.csv')
+    Test('./Dataset/vegetation.csv')
