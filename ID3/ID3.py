@@ -31,6 +31,7 @@ import numpy as np
 from typing import Dict
 from collections import deque
 from graphviz import Digraph
+from operator import itemgetter
 import ntpath
 import enum
 
@@ -63,6 +64,9 @@ class DataSet:
         for i in range(len(self.samples_values)):
             self.samples_values[i] = re.sub('\+,', '', self.samples_values[i])
             self.samples_values[i] = self.samples_values[i].strip().split(',')
+            for j in range(len(self.samples_values[i])):
+                if self.samples_values[i][j].lstrip('-').replace('.','',1).isdigit():
+                    self.samples_values[i][j] = float(self.samples_values[i][j])
             self.target_feature.append(self.samples_values[i].pop())
 
         target_freq = dict()
@@ -152,12 +156,12 @@ class DecisionTree:
         entropy = entropy * -1
         return entropy
 
-    def getEntropy(self, dataset, samples_values_ids, attribute_id=None, attribute_nam=None):
+    def getEntropy(self, dataset, samples_values_ids, attribute_id=None, attribute_val=None):
         entropy = 0
         sam_count = 0
         target_val = dict()
         for i in samples_values_ids:
-            if attribute_id is None or dataset.samples_values[i][attribute_id] == attribute_nam:
+            if attribute_id is None or dataset.samples_values[i][attribute_id] == attribute_val:
                 if dataset.target_feature[i] in target_val:
                     target_val[dataset.target_feature[i]] += 1
                 else:
@@ -193,17 +197,64 @@ class DecisionTree:
                 rem += att_vals_freq[item] * self.getGini(dataset, samples_values_ids, attributes_id, item)
 
         return rem
-    def get_rem_continuous_att(selfe, dataset, samples_values_ids, attributes_id, attrbute_name):
-        rem = 0
+    def calc_rem_continuous_att(self, dataset, samples_values_ids, attributes_id, threshold_val):
+        greater = 0
+        smaller = 0
+        greater_sample_ids = []
+        smaller_sample_ids = []
+        for i in samples_values_ids:
+            if dataset.samples_values[i][attributes_id] >= threshold_val:
+                greater += 1
+                greater_sample_ids.append(i)
+            else:
+                smaller +=1
+                smaller_sample_ids.append(i)
+
+        greater /= len(samples_values_ids)
+        smaller /= len(samples_values_ids)
+
+        if self.impurity_measure == Mearsure.Entropy_Gain_Info or \
+                self.impurity_measure == Mearsure.Entropy_Gain_Info_Ratio:
+            rem = greater * self.getEntropy(dataset, greater_sample_ids)
+            rem += smaller * self.getEntropy(dataset, smaller_sample_ids)
+        else:
+            rem = greater * self.getGini(dataset, greater_sample_ids)
+            rem += smaller * self.getGini(dataset, smaller_sample_ids)
+
+        return rem
+
+    def get_rem_continuous_att(self, dataset, samples_values_ids, attributes_id, attrbute_name):
+        tmp_samples_vals= []
+
+        for id in samples_values_ids:
+            tmp_samples_vals.append(dataset.samples_values[id])
+            tmp_samples_vals[-1].append(dataset.target_feature[id])
+
+        tmp_samples_vals.sort(key=itemgetter(attributes_id))
+        adj_pair = []
+        print (tmp_samples_vals)
+        for i in range(len(tmp_samples_vals) - 1):
+            if tmp_samples_vals[i+1][-1] is not tmp_samples_vals[i][-1]:
+                p1 = tmp_samples_vals[i+1][attributes_id]
+                p2 = tmp_samples_vals[i][attributes_id]
+                adj_pair.append((p1 + p2) / 2)
+
+        rem_list = []
+        for th in adj_pair:
+            tmp_rem = self.calc_rem_continuous_att(dataset, samples_values_ids, attributes_id, th)
+            rem_list.append([tmp_rem, th])
+
+        rem = min(rem_list)
         return rem
 
     def get_rem(self, dataset, samples_values_ids, attributes_id):
-        rem = 0
+        rem = []
         attrbute_name = dataset.attributes_names[attributes_id]
         if not dataset.isContinuousAttribute(attrbute_name):
-            rem = self.get_rem_discrete_att(dataset, samples_values_ids, attributes_id, attrbute_name)
+            rem = [self.get_rem_discrete_att(dataset, samples_values_ids, attributes_id, attrbute_name)]
         else:
             rem = self.get_rem_continuous_att(dataset, samples_values_ids, attributes_id, attrbute_name)
+
         return rem
 
     def get_best_att_GI(self, dataset, samples_values_ids, attributes_ids):
@@ -216,15 +267,21 @@ class DecisionTree:
 
         # print(entropy)
         gain_info = [0] * len(dataset.attributes_ids)
+        rem = [0] * len(dataset.attributes_ids)
         # print("gain info =")
         for att in attributes_ids:
-            gain_info[att] = (measure - self.get_rem(dataset, samples_values_ids, att))
+            rem[att] = self.get_rem(dataset, samples_values_ids, att)
+            gain_info[att] = (measure - rem[att][0])
             if self.impurity_measure == Mearsure.Entropy_Gain_Info_Ratio:
                 gain_info[att] /= self.getAttributeEntropy(dataset, samples_values_ids, att)
 
-        # print(gain_info)
         best_att_id = gain_info.index(max(gain_info))
-        return dataset.attributes_names[best_att_id], best_att_id
+        threshold = None
+        print(rem[best_att_id])
+        print(len(rem))
+        if isinstance(rem[best_att_id], list) and len(rem[best_att_id]) > 1:
+            threshold = rem[best_att_id][1]
+        return dataset.attributes_names[best_att_id], best_att_id, threshold
 
     def __id3_rec(self, dataset, samples_values_ids, attributes_ids, root):
         _attributes_ids = attributes_ids[:]
@@ -238,27 +295,41 @@ class DecisionTree:
             root.node_value = dataset.max_target_freq
             return root
         # Get the maximum gain info which induct that this descriptive feature
-        bestAttributNam, bestAttrinutId = self.get_best_att_GI(dataset, samples_values_ids, _attributes_ids)
+        bestAttributNam, bestAttrinutId, threshold = self.get_best_att_GI(dataset, samples_values_ids, _attributes_ids)
 
         root.node_value = bestAttributNam
         root.node_childs = []
         print(bestAttributNam)
-        print(dataset.attributes_values[bestAttributNam])
-        for item in dataset.attributes_values[bestAttributNam]:
+
+        if threshold is None:
+            print(dataset.attributes_values[bestAttributNam])
+            attributes_vals = dataset.attributes_values[bestAttributNam]
+        else:
+            attributes_vals = [('<' + str(threshold)), ('>=' + str(threshold))]
+            print(attributes_vals)
+        for item in attributes_vals:
             child = Node()
             child.node_value = item
             root.node_childs.append(child)
 
             childsamplesid = []
             for id in samples_values_ids:
-                if dataset.samples_values[id][bestAttrinutId] == item:
-                    childsamplesid.append(id)
+                if threshold is None:
+                    if dataset.samples_values[id][bestAttrinutId] == item:
+                        childsamplesid.append(id)
+                else:
+                    if '>=' in item:
+                        if dataset.samples_values[id][bestAttrinutId] >= threshold:
+                            childsamplesid.append(id)
+                    else:
+                        if dataset.samples_values[id][bestAttrinutId] < threshold:
+                            childsamplesid.append(id)
 
             if len(childsamplesid) == 0:
                 child.node_next = Node()
                 child.node_next.node_value = dataset.max_target_freq
             else:
-                if len(_attributes_ids) > 0 and bestAttrinutId in _attributes_ids:
+                if len(_attributes_ids) > 0 and bestAttrinutId in _attributes_ids and threshold is None:
                     to_be_remove = _attributes_ids.index(bestAttrinutId)
                     _attributes_ids.pop(to_be_remove)
                 child.node_next = self.__id3_rec(dataset, childsamplesid, _attributes_ids, child.node_next)
@@ -283,7 +354,7 @@ class DecisionTree:
                     print(node.node_next)
 
     def drawTree(self, database_name):
-        g = Digraph('finite_state_machine', filename=database_name + '.gv')
+        g = Digraph('Decision Tree of ' + database_name, filename=database_name + '.gv')
         g.attr(rankdir='TB', size='8,5')
 
         g.attr('node', shape='ellipse')
@@ -301,6 +372,33 @@ class DecisionTree:
                     g.node(node.node_next)
         g.view()
 
+    def drawTreeDFS(self, database_name):
+        g = Digraph('Decision Tree of ' + database_name, filename=database_name + '.gv')
+        g.attr(rankdir='TB', size='8,5')
+
+        g.attr('node', shape='ellipse')
+
+        self.drawTreeRec(self.root, g,0)
+        g.view()
+
+    def drawTreeRec(self, root, graph, node_num):
+        if not root:
+            return node_num
+        cur_node = node_num
+        if root.node_childs:
+            graph.node(str(cur_node), str(root.node_value))
+            for n in root.node_childs:
+                if not n.node_next.node_childs:
+                    graph.node(str(n.node_next.node_value), shape='square')
+                    graph.edge(str(cur_node), str(n.node_next.node_value), label=str(n.node_value))
+                else:
+                    graph.node(str(node_num+1), str(n.node_next.node_value))
+                    graph.edge(str(cur_node), str(node_num+1), label=str(n.node_value))
+                node_num = self.drawTreeRec(n.node_next, graph, node_num+1)
+        # elif root.node_next:
+        #     graph.node(str(node_num), str(root.node_next), shape='square')
+
+        return node_num+1
 
 def Test(file_path):
     dataSet = DataSet(file_path)
@@ -309,9 +407,10 @@ def Test(file_path):
     decision_tree = DecisionTree()
     decision_tree.id3(dataSet)
     decision_tree.printTree()
-    decision_tree.drawTree(dataSet.data_set_name)
+    decision_tree.drawTreeDFS(dataSet.data_set_name)
 
 
 if __name__ == '__main__':
     # Test('./Dataset/Playtennis.csv')
-    Test('./Dataset/vegetation.csv')
+    # Test('./Dataset/vegetation.csv')
+    Test('./Dataset/vegetation_Cont.csv')

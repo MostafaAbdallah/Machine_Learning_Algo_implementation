@@ -1,0 +1,8 @@
+STREAM_D,SLOPE_D,ELEVATION_C,VEGETATION
+FALSE,Steep,3900,Chapparal
+TRUE,Moderate,300,Riparian
+TRUE,Steep,1500,Riparian
+FALSE,Steep,1200,Chapparal
+FALSE,Flat,4450,Conifer
+TRUE,Steep,5000,Conifer
+TRUE,Steep,3000,Chapparal

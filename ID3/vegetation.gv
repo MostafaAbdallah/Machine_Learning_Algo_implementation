@@ -1,23 +1,25 @@
-digraph finite_state_machine {
+digraph "Decision Tree of vegetation" {
 	rankdir=TB size="8,5"
 	node [shape=ellipse]
-	ELEVATION_D
-	ELEVATION_D -> SLOPE_D [label=High]
-	ELEVATION_D -> Riparian [label=Low]
-	ELEVATION_D -> STREAM_D [label=Medium]
-	ELEVATION_D -> Conifer [label=Highest]
-	SLOPE_D
-	SLOPE_D -> Chapparal [label=Steep]
-	SLOPE_D -> Chapparal [label=Moderate]
-	SLOPE_D -> Conifer [label=Flat]
-	Riparian
-	STREAM_D
-	STREAM_D -> Chapparal [label=FALSE]
-	STREAM_D -> Riparian [label=TRUE]
-	Conifer
-	Chapparal
-	Chapparal
-	Conifer
-	Chapparal
-	Riparian
+	0 [label=ELEVATION_D]
+	1 [label=SLOPE_D]
+	0 -> 1 [label=High]
+	1 [label=SLOPE_D]
+	Chapparal [shape=square]
+	1 -> Chapparal [label=Steep]
+	Chapparal [shape=square]
+	1 -> Chapparal [label=Moderate]
+	Conifer [shape=square]
+	1 -> Conifer [label=Flat]
+	Riparian [shape=square]
+	0 -> Riparian [label=Low]
+	11 [label=STREAM_D]
+	0 -> 11 [label=Medium]
+	11 [label=STREAM_D]
+	Chapparal [shape=square]
+	11 -> Chapparal [label=FALSE]
+	Riparian [shape=square]
+	11 -> Riparian [label=TRUE]
+	Conifer [shape=square]
+	0 -> Conifer [label=Highest]
 }

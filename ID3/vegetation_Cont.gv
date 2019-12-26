@@ -1,0 +1,19 @@
+digraph "Decision Tree of vegetation_Cont" {
+	rankdir=TB size="8,5"
+	node [shape=ellipse]
+	0 [label=ELEVATION_C]
+	1 [label=STREAM_D]
+	0 -> 1 [label="<4175.0"]
+	1 [label=STREAM_D]
+	Chapparal [shape=square]
+	1 -> Chapparal [label=FALSE]
+	4 [label=ELEVATION_C]
+	1 -> 4 [label=TRUE]
+	4 [label=ELEVATION_C]
+	Riparian [shape=square]
+	4 -> Riparian [label="<2250.0"]
+	Chapparal [shape=square]
+	4 -> Chapparal [label=">=2250.0"]
+	Conifer [shape=square]
+	0 -> Conifer [label=">=4175.0"]
+}

@@ -1,19 +1,21 @@
-digraph finite_state_machine {
+digraph "Decision Tree of Playtennis" {
 	rankdir=TB size="8,5"
 	node [shape=ellipse]
-	Outlook_D
-	Outlook_D -> Humidity_D [label=Sunny]
-	Outlook_D -> Yes [label=Overcast]
-	Outlook_D -> Wind_D [label=Rain]
-	Humidity_D
-	Humidity_D -> No [label=High]
-	Humidity_D -> Yes [label=Normal]
-	Yes
-	Wind_D
-	Wind_D -> Yes [label=Weak]
-	Wind_D -> No [label=Strong]
-	No
-	Yes
-	Yes
-	No
+	0 [label=Outlook_D]
+	1 [label=Humidity_D]
+	0 -> 1 [label=Sunny]
+	1 [label=Humidity_D]
+	No [shape=square]
+	1 -> No [label=High]
+	Yes [shape=square]
+	1 -> Yes [label=Normal]
+	Yes [shape=square]
+	0 -> Yes [label=Overcast]
+	9 [label=Wind_D]
+	0 -> 9 [label=Rain]
+	9 [label=Wind_D]
+	Yes [shape=square]
+	9 -> Yes [label=Weak]
+	No [shape=square]
+	9 -> No [label=Strong]
 }
