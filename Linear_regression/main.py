@@ -8,7 +8,7 @@ import numpy as np
 def Test1():
     dataSet = read_dataset.DataSet('./DataSet/franchise_rest.csv')
     learningRate = 0.01
-    numofIteration = 1500
+    numofIteration = 500
     samples_values_arr, target_feature_arr = dataSet.getDataSetAsNumPy()
 
     linearReg = LinearRegression(samples_values_arr, target_feature_arr)
@@ -37,7 +37,7 @@ def Test1():
 def Test2():
     dataSet = read_dataset.DataSet('./DataSet/rental_house.csv')
 
-    learningRate = 0.000001
+    learningRate = 0.1
     numofIteration = 100
     samples_values_arr, target_feature_arr = dataSet.getDataSetAsNumPy()
 
@@ -66,8 +66,8 @@ def Test2():
 
 def Test3():
     dataSet = read_dataset.DataSet('./DataSet/House_Price.csv')
-    learningRate = 0.00000001
-    numofIteration = 1000
+    learningRate = 0.01
+    numofIteration = 500
     samples_values_arr, target_feature_arr = dataSet.getDataSetAsNumPy()
 
     linearReg = LinearRegression(samples_values_arr, target_feature_arr)
@@ -77,18 +77,15 @@ def Test3():
     ax = Axes3D(fig)
 
     ax.scatter3D(samples_values_arr[:, 0], samples_values_arr[:, 1], np.transpose(target_feature_arr),
-                    marker='x')
+                    marker='x', label="The actual Values")
     ax.scatter3D(samples_values_arr[:, 0], samples_values_arr[:, 1], regressionLine,
-                    marker='o')
+                    marker='o', label="The predicated Values")
 
     ax.set_xlabel(dataSet.feature_name[0])
     ax.set_ylabel(dataSet.feature_name[1])
     ax.set_zlabel(dataSet.target_name)
-    # plt.xlabel(dataSet.feature_name[0])
-    # plt.ylabel(dataSet.target_name)
-    #
-    # plt.plot(samples_values_arr, regressionLine)
-    # plt.title(dataSet.data_set_name + ' data set')
+
+    plt.title(dataSet.data_set_name + ' data set')
     print(linearReg.square_error)
     # #
     plt.figure(2)

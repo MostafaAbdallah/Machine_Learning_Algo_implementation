@@ -53,7 +53,7 @@ class LinearRegression:
         :return: the function return two information:
                         1- The first output is the model weights after the converge
                         2- The second output is the predication target values
-                     @todo Return the mean and the standard deviation for the descriptive features
+                        3- Save the mean and the standard deviation for the descriptive features
         """
         row, col = self.X.shape
         m = row
@@ -61,7 +61,7 @@ class LinearRegression:
         # [a, b), b > a multiply the output of random_sample by (b-a) and add a:
         self.W = (randB - randA) * np.random.random((1, col)) + randA
         # Normalize the features
-        norm_X = supp.DataPreparation.featuresNormaliz( self.X)
+        norm_X, self.stat_X = supp.DataPreparation.featuresNormaliz(self.X)
 
 
         for it in range(numofIteration):

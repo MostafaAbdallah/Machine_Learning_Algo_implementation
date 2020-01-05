@@ -29,8 +29,10 @@ class DataPreparation:
         :param Xi: a vector contain the feature value
         :return: normalized the feature vector
         """
-
-        return (Xi - np.mean(Xi)) / np.std(Xi)
+        x_mean = np.mean(Xi)
+        x_std = np.std(Xi)
+        #
+        return (Xi - x_mean) / x_std, np.array([x_mean, x_std])
 
     @staticmethod
     def featuresNormaliz(X):
@@ -41,9 +43,12 @@ class DataPreparation:
         """
         row, col = X.shape
         norm_X = np.array(X)
-        for colIdx in range(col, 1):
-            norm_X[:, colIdx] = DataPreparation.featureNormalize(X[:, colIdx])
+        stat_X = np.zeros(shape=(2, col))
+        for colIdx in range(1, col):
+            norm_X[:, colIdx], tmp = DataPreparation.featureNormalize(X[:, colIdx])
+            print(stat_X[:, colIdx])
+            stat_X[:, colIdx] = tmp
 
-        return norm_X
+        return norm_X, stat_X
 
 
