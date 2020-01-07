@@ -7,12 +7,12 @@ import numpy as np
 
 def Test1():
     dataSet = read_dataset.DataSet('./DataSet/franchise_rest.csv')
-    learningRate = 0.01
-    numofIteration = 500
+    learningRate = 0.5
+    numofIteration = 100
     samples_values_arr, target_feature_arr = dataSet.getDataSetAsNumPy()
 
     linearReg = LinearRegression(samples_values_arr, target_feature_arr)
-    model_weights, regressionLine = linearReg.gradientDescent(learningRate=learningRate, numofIteration=numofIteration)
+    model_weights, regressionLine = linearReg.gradientDescent(initlearningRate=learningRate, numofIteration=numofIteration)
 
     plt.figure(1)
 
@@ -42,7 +42,7 @@ def Test2():
     samples_values_arr, target_feature_arr = dataSet.getDataSetAsNumPy()
 
     linearReg = LinearRegression(samples_values_arr, target_feature_arr)
-    model_weights, regressionLine = linearReg.gradientDescent(learningRate=learningRate, numofIteration=numofIteration)
+    model_weights, regressionLine = linearReg.gradientDescent(initlearningRate=learningRate, numofIteration=numofIteration)
 
     plt.figure(1)
 
@@ -66,12 +66,12 @@ def Test2():
 
 def Test3():
     dataSet = read_dataset.DataSet('./DataSet/House_Price.csv')
-    learningRate = 0.01
-    numofIteration = 500
+    learningRate = 1.5
+    numofIteration = 100
     samples_values_arr, target_feature_arr = dataSet.getDataSetAsNumPy()
 
     linearReg = LinearRegression(samples_values_arr, target_feature_arr)
-    model_weights, regressionLine = linearReg.gradientDescent(learningRate=learningRate, numofIteration=numofIteration)
+    model_weights, regressionLine = linearReg.gradientDescent(initlearningRate=learningRate, numofIteration=numofIteration)
 
     t_stat, p_values, null_hypothesis = linearReg.stat_significance_calc()
     print('t-statistic :')

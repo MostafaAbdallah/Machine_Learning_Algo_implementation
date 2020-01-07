@@ -50,7 +50,20 @@ class LinearRegression:
         self.W = np.array([])
         self.square_error = []
 
-    def gradientDescent(self, learningRate, numofIteration, randA=-2, randB=2):
+    def decayLearningRate(self, alpha0, decayingConst, iter_mum):
+        """
+        use learning rate decay, which allows the learning rate to start at a large value and then decay over time
+
+        :param alpha0: the initial learning rate
+        :param decayingConst: controls how quickly the learning rate decays.
+        :param iter_mum: the current gradient descent iteration number
+        :return: the updated learning rate
+        """
+
+        return alpha0 * (decayingConst / (decayingConst + iter_mum))
+
+    def gradientDescent(self, initlearningRate, numofIteration, randA=-2, randB=2, adaptLearningRate=True,
+                        decayingConst = 100):
         """
             Apply the gradient descent algorithm to create a linear predication model
             steps:
@@ -65,7 +78,7 @@ class LinearRegression:
                     3.4 store the square error value for the new model weight to make sure that the error is reducing
                 5- calculate the predication values with the generated model
 
-        :param learningRate: is the learning step, which use to change the weights to lead the model to converge
+        :param initlearningRate: is the learning step, which use to change the weights to lead the model to converge
                 if the learningRate is very low, it will need mush more iteration to converge
                 if the LearningRate is very large, The large adjustments made to the weights during gradient descent
                  cause it to jump completely from one side of the error surface to the other.
@@ -75,6 +88,8 @@ class LinearRegression:
         :param numofIteration: number of iteration the the gradient descent will iterate to build the linear  model
         :param randA: the start of the random range which use to generate a random weights
         :param randB: the end of the random range which use to generate a random weights
+        :param adaptLearningRate: Giving the option to apply the learning rate decaying during the learning process
+        :param decayingConst: controls how quickly the learning rate decays.
         :return: the function return two information:
                         1- The first output is the model weights after the converge
                         2- The second output is the predication target values
@@ -85,12 +100,17 @@ class LinearRegression:
 
         # [a, b), b > a multiply the output of random_sample by (b-a) and add a:
         self.W = (randB - randA) * np.random.random((1, col)) + randA
+        learningRate = initlearningRate
 
 
         for it in range(numofIteration):
 
             deltaError = supp.CostFunction.DeltaError(self.W, self.norm_X, self.Y)
             deltaError_drv = (1 / m) * (deltaError @ self.norm_X)
+
+            if adaptLearningRate:
+                learningRate = self.decayLearningRate(initlearningRate, decayingConst, it)
+
             self.W = self.W - learningRate * deltaError_drv
 
             cost = supp.CostFunction.DeltaError(self.W, self.norm_X, self.Y)
