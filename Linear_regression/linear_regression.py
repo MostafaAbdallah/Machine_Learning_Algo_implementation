@@ -6,6 +6,8 @@ class LinearRegression:
     """
     LinearRegression: is a class for the Linear Regression algorithm
 
+    @TODO: Need to handling categorical features.
+    @TODO: Using Panda to facilitate the data processing
     The Algorithm Expansions:
                 - Some important observation we can get from the trained model weights:
                     * The sign and the magnitude of the weights indicate the descriptive features have a positive and
