@@ -73,6 +73,14 @@ def Test3():
     linearReg = LinearRegression(samples_values_arr, target_feature_arr)
     model_weights, regressionLine = linearReg.gradientDescent(learningRate=learningRate, numofIteration=numofIteration)
 
+    t_stat, p_values, null_hypothesis = linearReg.stat_significance_calc()
+    print('t-statistic :')
+    print(t_stat)
+    print('P_values :')
+    print(p_values)
+    print('significant impact')
+    print(null_hypothesis)
+
     fig = plt.figure()
     ax = Axes3D(fig)
 

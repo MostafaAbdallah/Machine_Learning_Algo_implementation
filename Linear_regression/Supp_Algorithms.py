@@ -46,7 +46,6 @@ class DataPreparation:
         stat_X = np.zeros(shape=(2, col))
         for colIdx in range(1, col):
             norm_X[:, colIdx], tmp = DataPreparation.featureNormalize(X[:, colIdx])
-            print(stat_X[:, colIdx])
             stat_X[:, colIdx] = tmp
 
         return norm_X, stat_X

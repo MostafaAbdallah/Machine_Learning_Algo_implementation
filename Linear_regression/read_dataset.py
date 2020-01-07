@@ -28,8 +28,8 @@ class DataSet:
         samples_values_arr = np.array(self.samples_values, ndmin=2)
         target_feature_arr = np.array(self.target_feature, ndmin=2)
 
-        print(samples_values_arr)
-        print(target_feature_arr)
+        # print(samples_values_arr)
+        # print(target_feature_arr)
 
         return samples_values_arr, target_feature_arr
 
