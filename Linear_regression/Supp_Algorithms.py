@@ -1,24 +1,58 @@
 import numpy as np
 
+
+def LogisticFuction(Val):
+    """
+    Function to calculate the logistic cost
+    :param Val: an array, a vector or scalar to calculate the logistic function to it
+    :return: logistic fun values
+    """
+
+    Val = -1.0 * Val
+
+    logistc_val = 1.0 / (1.0 + np.exp(Val))
+
+    return logistc_val
+
+
 class CostFunction:
 
     @staticmethod
     def DeltaError(W, X, Y):
         """
-        Square Error Function compute the error between the predication model and the target feature
+        Error Function compute the error between the predication model and the target feature
         based on the equation:
-                squE = (( (W)T * X) - Y)^2
+                DE = (( (W)T * X) - Y)
         :param W: The weights Vector
         :param X: The descriptive features vector, it should contain the dummy Feature x0
         :param Y: The target features Vector
-        :return: a vector of the square error between the predicated targets and the actual target
+        :return: a vector of the delta error between the predicated targets and the actual target
         """
 
         W_trans = np.array(W)
         predicate = X @ W_trans.transpose()
-        deltaError = predicate.transpose() - Y
+        deltaError = predicate - Y
 
         return deltaError
+
+    @staticmethod
+    def crossEntropy(predication, Y):
+        """
+
+        :param predication: (N X 1)
+        :param Y: (N X 1)
+        :return: cost as scale value
+        """
+
+        row, col = Y.shape
+        # cost _scalar = (1 X N) * (N X 1)
+        class1 = Y * np.log(predication)
+        class2 = (1 - Y) * np.log((1-predication))
+        cost = class1 + class2
+        cost = sum(cost) * -1/row
+
+        return float(cost)
+
 
 class DataPreparation:
 
@@ -42,7 +76,7 @@ class DataPreparation:
         :return: Normalized descriptive features array
         """
         row, col = X.shape
-        norm_X = np.array(X)
+        norm_X = np.array(X, dtype=float)
         stat_X = np.zeros(shape=(2, col))
         for colIdx in range(1, col):
             norm_X[:, colIdx], tmp = DataPreparation.featureNormalize(X[:, colIdx])

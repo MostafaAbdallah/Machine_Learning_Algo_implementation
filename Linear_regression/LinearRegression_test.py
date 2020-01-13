@@ -1,8 +1,8 @@
 import read_dataset
 from Regression_Model import LinearRegression
+import numpy as np
 from matplotlib import pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
-import numpy as np
 
 
 def Test1():
@@ -17,8 +17,8 @@ def Test1():
     plt.figure(1)
 
     plt.scatter(samples_values_arr, target_feature_arr, label=dataSet.data_set_name, marker='x')
-    plt.xlabel(dataSet.feature_name[0])
-    plt.ylabel(dataSet.target_name)
+    plt.xlabel(dataSet.dataSet.columns.values[0])
+    plt.ylabel(dataSet.dataSet.columns.values[-1])
 
     plt.plot(samples_values_arr, regressionLine)
     plt.title(dataSet.data_set_name + ' data set')
@@ -47,8 +47,8 @@ def Test2():
     plt.figure(1)
 
     plt.scatter(samples_values_arr, target_feature_arr, label=dataSet.data_set_name, marker='x')
-    plt.xlabel(dataSet.feature_name[0])
-    plt.ylabel(dataSet.target_name)
+    plt.xlabel(dataSet.dataSet.columns.values[0])
+    plt.ylabel(dataSet.dataSet.columns.values[-1])
 
     plt.plot(samples_values_arr, regressionLine)
     plt.title(dataSet.data_set_name + ' data set')
@@ -84,14 +84,14 @@ def Test3():
     fig = plt.figure()
     ax = Axes3D(fig)
 
-    ax.scatter3D(samples_values_arr[:, 0], samples_values_arr[:, 1], np.transpose(target_feature_arr),
+    ax.scatter3D(samples_values_arr.iloc[:, 0], samples_values_arr.iloc[:, 1], np.transpose(target_feature_arr),
                     marker='x', label="The actual Values")
-    ax.scatter3D(samples_values_arr[:, 0], samples_values_arr[:, 1], regressionLine,
+    ax.scatter3D(samples_values_arr.iloc[:, 0], samples_values_arr.iloc[:, 1], regressionLine,
                     marker='o', label="The predicated Values")
 
-    ax.set_xlabel(dataSet.feature_name[0])
-    ax.set_ylabel(dataSet.feature_name[1])
-    ax.set_zlabel(dataSet.target_name)
+    ax.set_xlabel(dataSet.dataSet.columns.values[0])
+    ax.set_ylabel(dataSet.dataSet.columns.values[1])
+    ax.set_zlabel(dataSet.dataSet.columns.values[2])
 
     plt.title(dataSet.data_set_name + ' data set')
     print(linearReg.square_error)
